@@ -1,2 +1,6 @@
 server:
   port: 8080
+kisso:
+  config:
+    # 配置一个固定的域名作为 cookie 识别的域名，之后这个域名及其子域名都可以使用同一套登录系统
+    cookie-domain: test.com
