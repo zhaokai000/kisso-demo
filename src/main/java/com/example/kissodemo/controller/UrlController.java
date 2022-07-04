@@ -1,7 +1,9 @@
 package com.example.kissodemo.controller;
 
+import com.baomidou.kisso.SSOConfig;
 import com.baomidou.kisso.SSOHelper;
 import com.baomidou.kisso.annotation.LoginIgnore;
+import com.baomidou.kisso.common.CookieHelper;
 import com.baomidou.kisso.enums.TokenOrigin;
 import com.baomidou.kisso.security.token.SSOToken;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +32,16 @@ public class UrlController {
     @LoginIgnore
     public String login() {
         return "login";
+    }
+
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        SSOConfig config = SSOConfig.getInstance();
+
+        CookieHelper.clearCookieByName(request, response, config.getCookieName(),
+                config.getCookieDomain(), config.getCookiePath());
+
+        return "redirect:login";
     }
 
     @GetMapping("index")
@@ -57,7 +67,7 @@ public class UrlController {
         SSOToken token = SSOToken.create().setId(0).setIssuer(username).setOrigin(TokenOrigin.COOKIE).setUserAgent(request);
         SSOHelper.setCookie(request, response, token);
 
-        model.addAttribute("username", username);
+        model.addAttribute("username", SSOHelper.getKissoService().getSSOToken(request).getIssuer());
         return "index";
     }
 
