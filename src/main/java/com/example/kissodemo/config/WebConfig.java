@@ -16,6 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         SSOSpringInterceptor ssoSpringInterceptor = new SSOSpringInterceptor();
         ssoSpringInterceptor.setHandlerInterceptor(new MySSOHandlerInterceptor());
-        registry.addInterceptor(ssoSpringInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(ssoSpringInterceptor).addPathPatterns("/**").excludePathPatterns("/jquery-3.6.0.min.js");
     }
 }
